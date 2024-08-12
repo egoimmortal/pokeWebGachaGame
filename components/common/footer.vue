@@ -1,18 +1,7 @@
 <template>
     <div id="footer">
-        
+        <span class="absolute bottom-1 right-4 font-bold border-2 border-sky-500 underline">
+            made by pemo
+        </span>
     </div>
 </template>
-
-<style lang="scss">
-#footer{
-    // position: absolute;
-    flex-shrink: 0;
-    min-height: 5vh;
-    // height: 50px;
-    // margin-top: -50px;
-    // bottom: 0px;
-    width: 100%;
-    background-color: $footer;
-}
-</style>

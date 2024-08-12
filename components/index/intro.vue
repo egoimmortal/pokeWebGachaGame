@@ -1,7 +1,9 @@
 <template>
     <div>
         <!-- <font-awesome-icon icon="fa-solid fa-user-secret" /> -->
-        <button @click.stop="getDitto">ditto test</button>
+        <button @click.stop="getDitto" class="simple-button1">
+            ditto test
+        </button>
     </div>
 </template>
 
