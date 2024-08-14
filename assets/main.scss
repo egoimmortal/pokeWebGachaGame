@@ -1,17 +1,14 @@
 /* 引入 Tailwind CSS */
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-#header{
-    @apply w-full min-h-10 bg-sky-500;
-}
+@import
+    './layouts/html',
+    './layouts/header',
+    './layouts/footer',
+    './layouts/body',
+    './layouts/default.scss';
 
-#footer{
-    @apply absolute bottom-0 w-full min-h-10 shrink-0 bg-sky-500;
-}
-
-// button type
-.simple-button1{
-    @apply bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded
-}
+@import
+    './components/button';

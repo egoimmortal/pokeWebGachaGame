@@ -8,18 +8,10 @@ export default defineNuxtConfig({
     }
   },
   css: [
-    '@fortawesome/fontawesome-svg-core/styles.css'
+    '@fortawesome/fontawesome-svg-core/styles.css',
+    '~/assets/main.scss'
   ],
   modules: ['@nuxtjs/tailwindcss'],
-  vite:{
-    css:{
-      preprocessorOptions:{
-        scss:{
-          additionalData: '@use "~/assets/main.scss" as *;'
-        }
-      }
-    }
-  },
   plugins: [
     '~/plugins/fontawesome.js'
   ]
