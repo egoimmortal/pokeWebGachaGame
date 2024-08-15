@@ -5,6 +5,12 @@
     "types": [
       "nuxt",
       "vite/client"
-    ]
+    ],
+    "lib": ["DOM", "ESNext"],
+    "target": "ESNext",
+    "module": "ESNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node"
   }
 }
