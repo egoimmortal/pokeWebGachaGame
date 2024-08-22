@@ -11,7 +11,7 @@ export const openDatabase = (): Promise<IDBDatabase> => {
         request.onupgradeneeded = function(event){
             const db = (event.target as IDBOpenDBRequest).result;
             if(!db.objectStoreNames.contains("myStore")){
-                db.createObjectStore("myStore", {keyPath: "id"});
+                db.createObjectStore("myStore", { keyPath: "id" });
             }
         };
 
@@ -25,7 +25,23 @@ export const openDatabase = (): Promise<IDBDatabase> => {
     })
 }
 
-export const addData = (db: IDBDatabase, data: MyData): Promise<void> => {
+export const getData = (db: IDBDatabase, id: number): Promise<MyData | undefined> => {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(["myStore"], "readonly");
+        const store = transaction.objectStore("myStore");
+        const request = store.get(id.toString());
+
+        request.onsuccess = (event) => {
+            resolve((event.target as IDBRequest<MyData>).result);
+        };
+
+        request.onerror = (event) => {
+            reject(new Error(`IDB Get error: ${(event.target as IDBRequest).error?.message}`));
+        };
+    });
+}
+
+export const addData = (db: IDBDatabase, data: any): Promise<void> => {
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(["myStore"], "readwrite");
         const store = transaction.objectStore("myStore");
@@ -41,14 +57,28 @@ export const addData = (db: IDBDatabase, data: MyData): Promise<void> => {
     });
 }
 
-export const getData = (db: IDBDatabase, id: number): Promise<MyData | undefined> => {
+export const updateData = (db: IDBDatabase, id: number, data: any): Promise<void> => {
     return new Promise((resolve, reject) => {
-        const transaction = db.transaction(["myStore"], "readonly");
+        const transaction = db.transaction(["myStore"], "readwrite");
         const store = transaction.objectStore("myStore");
-        const request = store.get(id);
+        const request = store.get(id.toString());
 
         request.onsuccess = (event) => {
-            resolve((event.target as IDBRequest<MyData>).result);
+            const result = (event.target as IDBRequest<any>).result;
+            Object.keys(data).forEach(key => {
+                const value = data[key];
+                result[key] = data[key];
+                console.log(`${key}: ${value}`);
+            });
+            const updateRequest = store.put(result);
+
+            updateRequest.onsuccess = (event) => {
+                resolve((event.target as IDBRequest<any>).result);
+            };
+
+            updateRequest.onerror = (event) => {
+                reject(new Error(`IDB Get error: ${(event.target as IDBRequest).error?.message}`));
+            };
         };
 
         request.onerror = (event) => {

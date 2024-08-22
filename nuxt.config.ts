@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
+  components: true,
   devtools: { enabled: false },
   runtimeConfig: {
     public:{
@@ -14,5 +15,10 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss'],
   plugins: [
     '~/plugins/fontawesome.js'
-  ]
+  ],
+  build: {
+    transpile: [
+      '@fortawesome/vue-fontawesome',
+    ],
+  },
 })

@@ -1,5 +1,4 @@
 <template>
-    {{ aa }}
     <IndexIntro></IndexIntro>
 </template>
 
