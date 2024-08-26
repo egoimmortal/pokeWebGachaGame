@@ -3,15 +3,17 @@ export interface MyData{
     name: string;
 }
 
-export const openDatabase = (): Promise<IDBDatabase> => {
+export const openDatabase = (dbID = 1, dbName = 'pokemon'): Promise<IDBDatabase> => {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open('myDatabase', 1);
-
-        // 判斷有沒有myStore，沒有的話就建立
-        request.onupgradeneeded = function(event){
+        const request = indexedDB.open('pokeWebGachaGame', dbID);
+        // 判斷有沒有 dbName的store，沒有的話就建立
+        request.onupgradeneeded = (event) => {
             const db = (event.target as IDBOpenDBRequest).result;
-            if(!db.objectStoreNames.contains("myStore")){
-                db.createObjectStore("myStore", { keyPath: "id" });
+            console.log('db = ', db);
+            console.log('dbName = ', dbName);
+            console.log('db.objectStoreNames.contains(dbName) = ', db.objectStoreNames.contains(dbName));
+            if(!db.objectStoreNames.contains(dbName)){
+                db.createObjectStore(dbName, { keyPath: "id" });
             }
         };
 
@@ -23,12 +25,12 @@ export const openDatabase = (): Promise<IDBDatabase> => {
             reject(new Error(`IDBDatabase error: ${(event.target as IDBOpenDBRequest).error?.message}`));
         };
     })
-}
+};
 
-export const getData = (db: IDBDatabase, id: number): Promise<MyData | undefined> => {
+export const getData = (db: IDBDatabase, id: number, dbName = 'pokemon'): Promise<MyData | undefined> => {
     return new Promise((resolve, reject) => {
-        const transaction = db.transaction(["myStore"], "readonly");
-        const store = transaction.objectStore("myStore");
+        const transaction = db.transaction([dbName], "readonly");
+        const store = transaction.objectStore(dbName);
         const request = store.get(id.toString());
 
         request.onsuccess = (event) => {
@@ -39,12 +41,28 @@ export const getData = (db: IDBDatabase, id: number): Promise<MyData | undefined
             reject(new Error(`IDB Get error: ${(event.target as IDBRequest).error?.message}`));
         };
     });
-}
+};
 
-export const addData = (db: IDBDatabase, data: any): Promise<void> => {
+export const getDatabaseCount = (db: IDBDatabase, dbName = 'pokemon'): Promise<number> => {
     return new Promise((resolve, reject) => {
-        const transaction = db.transaction(["myStore"], "readwrite");
-        const store = transaction.objectStore("myStore");
+        const transaction = db.transaction([dbName], "readonly");
+        const store = transaction.objectStore(dbName);
+        const countRequest = store.count();
+
+        countRequest.onsuccess = (event) => {
+            resolve((event.target as IDBRequest).result);
+        };
+
+        countRequest.onerror = (event) => {
+            reject(new Error(`IDBDatabase error: ${(event.target as IDBOpenDBRequest).error?.message}`));
+        };
+    });
+};
+
+export const addData = (db: IDBDatabase, data: any, dbName = 'pokemon'): Promise<void> => {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([dbName], "readwrite");
+        const store = transaction.objectStore(dbName);
         const request = store.add(data);
 
         request.onsuccess = () => {
@@ -55,12 +73,12 @@ export const addData = (db: IDBDatabase, data: any): Promise<void> => {
             reject(new Error(`IDB Add error: ${(event.target as IDBRequest).error?.message}`));
         };
     });
-}
+};
 
-export const updateData = (db: IDBDatabase, id: number, data: any): Promise<void> => {
+export const updateData = (db: IDBDatabase, id: number, data: any, dbName = 'pokemon'): Promise<void> => {
     return new Promise((resolve, reject) => {
-        const transaction = db.transaction(["myStore"], "readwrite");
-        const store = transaction.objectStore("myStore");
+        const transaction = db.transaction([dbName], "readwrite");
+        const store = transaction.objectStore(dbName);
         const request = store.get(id.toString());
 
         request.onsuccess = (event) => {
@@ -85,4 +103,4 @@ export const updateData = (db: IDBDatabase, id: number, data: any): Promise<void
             reject(new Error(`IDB Get error: ${(event.target as IDBRequest).error?.message}`));
         };
     });
-}
+};

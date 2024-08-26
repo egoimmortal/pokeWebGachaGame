@@ -1,7 +1,10 @@
 export const illustratedStore = defineStore('illustrated', {
     state: () => {
         return {
-            amount: 0
+            totalAmount: 0,
+            pageLimit: 20,
+            pages: 0,
+            currentPage: 0
         }
     }
-})
+});

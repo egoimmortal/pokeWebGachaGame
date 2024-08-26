@@ -1,18 +1,24 @@
 <template>
-    <div>
+    <div id="illustrated">
         <!-- <font-awesome-icon icon="fa-solid fa-user-secret" /> -->
-        <IllustratedSearch :pokemonAmount="pokemonAmount"></IllustratedSearch>
+        <!-- <IllustratedSearch></IllustratedSearch> -->
+        <!-- <IllustratedTabs></IllustratedTabs> -->
     </div>
 </template>
 
 <script setup lang="ts">
-import {openDatabase, addData, getData, updateData} from '~/composables/idb';
+import {openDatabase, addData, getData, getDatabaseCount, updateData} from '~/composables/idb';
 
-const pokemonAmount = ref(0);
+const useIllustratedStore = illustratedStore();
 
 /**判斷pokemon資料的快取是否存在 */
 async function judgePokemonCache(){
     const db = await openDatabase();
+    // console.log('db = ', db);
+    getDatabaseCount(db).then((count) => {
+        useIllustratedStore.totalAmount = count;
+        if(useIllustratedStore.totalAmount == 0) getPokemon();
+    });
 }
 
 /**取得pokemon id, name */
@@ -24,8 +30,13 @@ async function getPokemon(){
         async onResponse(rs: any){
             const data = rs.response._data;
 
+            console.log('getPokemon data = ', data);
             // 設定pokemon數量
-            pokemonAmount.value = data.results.length;
+            useIllustratedStore.totalAmount = data.count;
+            useIllustratedStore.pages = Math.ceil(data.count / useIllustratedStore.pageLimit);
+
+            console.log('useIllustratedStore.totalAmount = ', useIllustratedStore.totalAmount);
+            console.log('useIllustratedStore.pages = ', useIllustratedStore.pages);
 
             // 設定id
             for(let i = 0, max = data.results.length; i < max; i++){
@@ -35,8 +46,8 @@ async function getPokemon(){
             try{
                 for(let i = 0, max = data.results.length; i < max; i++){
                     const IDBdata = await getData(db, data.results[i].id);
+                    console.log('IDBdata = ', IDBdata);
                     if(IDBdata == undefined) await addData(db, data.results[i]);
-                    // getPokemonSprites(data.results[i].id);
                 }
             }
             catch(error){
