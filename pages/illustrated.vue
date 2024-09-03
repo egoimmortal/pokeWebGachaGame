@@ -2,7 +2,7 @@
     <div id="illustrated">
         <!-- <font-awesome-icon icon="fa-solid fa-user-secret" /> -->
         <!-- <IllustratedSearch></IllustratedSearch> -->
-        <!-- <IllustratedTabs></IllustratedTabs> -->
+        <IllustratedTabs></IllustratedTabs>
     </div>
 </template>
 
@@ -17,6 +17,7 @@ async function judgePokemonCache(){
     // console.log('db = ', db);
     getDatabaseCount(db).then((count) => {
         useIllustratedStore.totalAmount = count;
+        useIllustratedStore.setPages();
         if(useIllustratedStore.totalAmount == 0) getPokemon();
     });
 }
@@ -30,13 +31,13 @@ async function getPokemon(){
         async onResponse(rs: any){
             const data = rs.response._data;
 
-            console.log('getPokemon data = ', data);
+            // console.log('getPokemon data = ', data);
             // 設定pokemon數量
             useIllustratedStore.totalAmount = data.count;
-            useIllustratedStore.pages = Math.ceil(data.count / useIllustratedStore.pageLimit);
+            useIllustratedStore.setPages();
 
-            console.log('useIllustratedStore.totalAmount = ', useIllustratedStore.totalAmount);
-            console.log('useIllustratedStore.pages = ', useIllustratedStore.pages);
+            // console.log('useIllustratedStore.totalAmount = ', useIllustratedStore.totalAmount);
+            // console.log('useIllustratedStore.pages = ', useIllustratedStore.pages);
 
             // 設定id
             for(let i = 0, max = data.results.length; i < max; i++){
@@ -46,7 +47,7 @@ async function getPokemon(){
             try{
                 for(let i = 0, max = data.results.length; i < max; i++){
                     const IDBdata = await getData(db, data.results[i].id);
-                    console.log('IDBdata = ', IDBdata);
+                    // console.log('IDBdata = ', IDBdata);
                     if(IDBdata == undefined) await addData(db, data.results[i]);
                 }
             }

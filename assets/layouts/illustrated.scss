@@ -1,7 +1,7 @@
 #illustrated{
     @apply flex;
-}
 
-#illustrated-tabs > *{
-    @apply text-red-300;
+    & > #illustrated-tabs{
+        @apply grid grid-cols-4 gap-4;
+    }
 }
