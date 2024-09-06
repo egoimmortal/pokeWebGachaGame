@@ -4,7 +4,8 @@ export const illustratedStore = defineStore('illustrated', {
             totalAmount: 0,
             pageLimit: 20,
             pages: 0,
-            currentPage: 0
+            currentPage: 1,
+            currentPokemon: 1
         }
     },
     actions:{

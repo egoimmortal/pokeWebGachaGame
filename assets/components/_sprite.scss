@@ -1,0 +1,7 @@
+.illustrated-sprite-1{
+    @apply grid-cols-1 border-0 bg-white bg-transparent hover:border-transparent hover:cursor-pointer hover:bg-gray-500;
+
+    & > *{
+        @apply w-full h-full;
+    }
+}

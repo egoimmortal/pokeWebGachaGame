@@ -2,6 +2,8 @@
     <div id="illustrated">
         <!-- <font-awesome-icon icon="fa-solid fa-user-secret" /> -->
         <!-- <IllustratedSearch></IllustratedSearch> -->
+        <hr class="hr-1">
+        <IllustratedSpriteList></IllustratedSpriteList>
         <IllustratedTabs></IllustratedTabs>
     </div>
 </template>
@@ -54,22 +56,6 @@ async function getPokemon(){
             catch(error){
                 console.error('getPokemon database error = ', error);
             }
-        }
-    });
-}
-
-/**取得pokemon sprites */
-async function getPokemonSprites(id: number){
-    const db = await openDatabase();
-
-    await $fetch('/api/pokemonForm', {
-        method: 'POST',
-        body: {
-            id: id
-        },
-        onResponse(rs: any){
-            const data = rs.response._data;
-            updateData(db, id, data.sprites);
         }
     });
 }

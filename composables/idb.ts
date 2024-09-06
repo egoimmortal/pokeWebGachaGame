@@ -1,6 +1,19 @@
+export interface MyData_pokemonSprites{
+    front_default: string;
+    front_female: string;
+    front_shiny: string;
+    front_shiny_female: string;
+    back_default: string;
+    back_female: string;
+    back_shiny: string;
+    back_shiny_female: string;
+}
+
 export interface MyData{
     id: number;
     name: string;
+    url: string;
+    sprites: MyData_pokemonSprites;
 }
 
 export const openDatabase = (dbID = 1, dbName = 'pokemon'): Promise<IDBDatabase> => {
@@ -75,7 +88,7 @@ export const addData = (db: IDBDatabase, data: any, dbName = 'pokemon'): Promise
     });
 };
 
-export const updateData = (db: IDBDatabase, id: number, data: any, dbName = 'pokemon'): Promise<void> => {
+export const updateData = (db: IDBDatabase, id: number, dataName: string, data: any, dbName = 'pokemon'): Promise<void> => {
     return new Promise((resolve, reject) => {
         const transaction = db.transaction([dbName], "readwrite");
         const store = transaction.objectStore(dbName);
@@ -83,11 +96,11 @@ export const updateData = (db: IDBDatabase, id: number, data: any, dbName = 'pok
 
         request.onsuccess = (event) => {
             const result = (event.target as IDBRequest<any>).result;
-            Object.keys(data).forEach(key => {
-                const value = data[key];
-                result[key] = data[key];
-                console.log(`${key}: ${value}`);
-            });
+            // console.log('updateData data = ', data);
+            result[dataName] = data;
+            // Object.keys(data).forEach(key => {
+            //     result[key] = data[key];
+            // });
             const updateRequest = store.put(result);
 
             updateRequest.onsuccess = (event) => {
